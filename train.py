@@ -35,11 +35,11 @@ def train(mileages, prices, learning_rate=0.1, iterations=1000):
     norm_price, price_min, price_max = normalize(prices)
 
     for _ in range(iterations):
-        # Calculate gradients
+        # Compute summed errors for bias and slope (loop form of vectorized gradient)
         sum0 = sum(estimate_price(norm_km[i], theta0, theta1) - norm_price[i] for i in range(m))
         sum1 = sum((estimate_price(norm_km[i], theta0, theta1) - norm_price[i]) * norm_km[i] for i in range(m))
 
-        # Simultaneous update
+        # Simultaneous update: store deltas before applying them together
         tmp_theta0 = learning_rate * (1 / m) * sum0
         tmp_theta1 = learning_rate * (1 / m) * sum1
 
