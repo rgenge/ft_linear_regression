@@ -88,27 +88,4 @@ def plot_results(mileages, prices, theta0, theta1):
     plt.savefig('plot.png')
     plt.show()
 
-def main():
-    # Load data
-    mileages, prices = load_data("data.csv")
-    print(f"Loaded {len(mileages)} data points")
-
-    # Train
-    theta0, theta1 = train(mileages, prices)
-    print(f"Training complete!")
-    print(f"theta0 = {theta0:.4f}")
-    print(f"theta1 = {theta1:.6f}")
-
-    # Save
-    save_thetas(theta0, theta1)
-    print("Thetas saved to thetas.json")
-
-    # Precision (bonus)
-    r2 = calculate_precision(mileages, prices, theta0, theta1)
-    print(f"R² score: {r2:.4f} ({r2*100:.2f}% accuracy)")
-
-    # Plot (bonus)
-    plot_results(mileages, prices, theta0, theta1)
-
-if __name__ == "__main__":
-    main()
+# Module-only; main CLI is handled in main.py
