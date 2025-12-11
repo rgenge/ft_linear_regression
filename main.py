@@ -18,8 +18,8 @@ def do_train():
     data_path = input("Data CSV path [data.csv]: ").strip() or "data.csv"
     lr = prompt_float("Learning rate (blank=default 0.1): ", default=0.1)
     iters = prompt_float("Iterations (blank=default 1000): ", default=1000)
-    if lr is None or iters is None:
-        print("Invalid number. Aborting.")
+    if lr is None or iters is None or lr <= 0 or iters <= 0:
+        print("Learning rate and iterations must be positive numbers. Aborting.")
         return
 
     try:
