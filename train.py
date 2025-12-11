@@ -24,7 +24,7 @@ def estimate_price(mileage, theta0, theta1):
     """Calculate estimated price."""
     return theta0 + (theta1 * mileage)
 
-def train(mileages, prices, learning_rate=0.1, iterations=1000):
+def train(mileages, prices, learning_rate=0.1, iterations=1000, epsilon=1e-6):
     """Train using gradient descent."""
     m = len(mileages)
     theta0 = 0
@@ -34,7 +34,10 @@ def train(mileages, prices, learning_rate=0.1, iterations=1000):
     norm_km, km_min, km_max = normalize(mileages)
     norm_price, price_min, price_max = normalize(prices)
 
-    for _ in range(iterations):
+    for iteration in range(iterations):
+        old_theta0 = theta0
+        old_theta1 = theta1
+        
         # Compute summed errors for bias and slope (loop form of vectorized gradient)
         sum0 = sum(estimate_price(norm_km[i], theta0, theta1) - norm_price[i] for i in range(m))
         sum1 = sum((estimate_price(norm_km[i], theta0, theta1) - norm_price[i]) * norm_km[i] for i in range(m))
@@ -45,6 +48,11 @@ def train(mileages, prices, learning_rate=0.1, iterations=1000):
 
         theta0 -= tmp_theta0
         theta1 -= tmp_theta1
+        
+        # Check convergence: if thetas barely changed, stop training
+        if abs(theta0 - old_theta0) < epsilon and abs(theta1 - old_theta1) < epsilon:
+            print(f"Converged at iteration {iteration + 1}")
+            break
 
     # Denormalize thetas
     price_range = price_max - price_min
