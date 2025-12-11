@@ -87,5 +87,3 @@ def plot_results(mileages, prices, theta0, theta1):
     plt.grid(True)
     plt.savefig('plot.png')
     plt.show()
-
-# Module-only; main CLI is handled in main.py
