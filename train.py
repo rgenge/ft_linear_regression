@@ -7,11 +7,14 @@ def load_data(filename):
     """Load dataset from CSV file."""
     mileages = []
     prices = []
-    with open(filename, 'r') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            mileages.append(float(row['km']))
-            prices.append(float(row['price']))
+    try:
+        with open(filename, 'r') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                mileages.append(float(row['km']))
+                prices.append(float(row['price']))
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Dataset not found at: {filename}")
     return mileages, prices
 
 def normalize(data):
@@ -37,7 +40,7 @@ def train(mileages, prices, learning_rate=0.1, iterations=1000, epsilon=1e-6):
     for iteration in range(iterations):
         old_theta0 = theta0
         old_theta1 = theta1
-        
+
         # Compute summed errors for bias and slope (loop form of vectorized gradient)
         sum0 = sum(estimate_price(norm_km[i], theta0, theta1) - norm_price[i] for i in range(m))
         sum1 = sum((estimate_price(norm_km[i], theta0, theta1) - norm_price[i]) * norm_km[i] for i in range(m))
@@ -48,7 +51,7 @@ def train(mileages, prices, learning_rate=0.1, iterations=1000, epsilon=1e-6):
 
         theta0 -= tmp_theta0
         theta1 -= tmp_theta1
-        
+
         # Check convergence: if thetas barely changed, stop training
         if abs(theta0 - old_theta0) < epsilon and abs(theta1 - old_theta1) < epsilon:
             print(f"Converged at iteration {iteration + 1}")

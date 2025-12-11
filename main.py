@@ -22,7 +22,11 @@ def do_train():
         print("Invalid number. Aborting.")
         return
 
-    mileages, prices = load_data(data_path)
+    try:
+        mileages, prices = load_data(data_path)
+    except FileNotFoundError as err:
+        print(err)
+        return
     print(f"Loaded {len(mileages)} rows from {data_path}")
 
     theta0, theta1 = train(mileages, prices, learning_rate=lr, iterations=int(iters))
