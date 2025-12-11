@@ -3,19 +3,21 @@ import csv
 import json
 import matplotlib.pyplot as plt
 
+
 def load_data(filename):
     """Load dataset from CSV file."""
     mileages = []
     prices = []
     try:
-        with open(filename, 'r') as f:
+        with open(filename, "r") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                mileages.append(float(row['km']))
-                prices.append(float(row['price']))
+                mileages.append(float(row["km"]))
+                prices.append(float(row["price"]))
     except FileNotFoundError:
         raise FileNotFoundError(f"Dataset not found at: {filename}")
     return mileages, prices
+
 
 def normalize(data):
     """Normalize data to range [0, 1]."""
@@ -23,9 +25,11 @@ def normalize(data):
     max_val = max(data)
     return [(x - min_val) / (max_val - min_val) for x in data], min_val, max_val
 
+
 def estimate_price(mileage, theta0, theta1):
     """Calculate estimated price."""
     return theta0 + (theta1 * mileage)
+
 
 def train(mileages, prices, learning_rate=0.1, iterations=1000, epsilon=1e-6):
     """Train using gradient descent."""
@@ -42,8 +46,13 @@ def train(mileages, prices, learning_rate=0.1, iterations=1000, epsilon=1e-6):
         old_theta1 = theta1
 
         # Compute summed errors for bias and slope (loop form of vectorized gradient)
-        sum0 = sum(estimate_price(norm_km[i], theta0, theta1) - norm_price[i] for i in range(m))
-        sum1 = sum((estimate_price(norm_km[i], theta0, theta1) - norm_price[i]) * norm_km[i] for i in range(m))
+        sum0 = sum(
+            estimate_price(norm_km[i], theta0, theta1) - norm_price[i] for i in range(m)
+        )
+        sum1 = sum(
+            (estimate_price(norm_km[i], theta0, theta1) - norm_price[i]) * norm_km[i]
+            for i in range(m)
+        )
 
         # Simultaneous update: store deltas before applying them together
         tmp_theta0 = learning_rate * (1 / m) * sum0
@@ -66,10 +75,12 @@ def train(mileages, prices, learning_rate=0.1, iterations=1000, epsilon=1e-6):
 
     return real_theta0, real_theta1
 
+
 def save_thetas(theta0, theta1):
     """Save thetas to JSON file."""
     with open("thetas.json", "w") as f:
         json.dump({"theta0": theta0, "theta1": theta1}, f)
+
 
 def calculate_precision(mileages, prices, theta0, theta1):
     """Calculate R² score (coefficient of determination)."""
@@ -81,20 +92,21 @@ def calculate_precision(mileages, prices, theta0, theta1):
 
     return 1 - (ss_res / ss_tot)
 
+
 def plot_results(mileages, prices, theta0, theta1):
     """Plot data points and regression line."""
     plt.figure(figsize=(10, 6))
-    plt.scatter(mileages, prices, color='blue', label='Data points')
+    plt.scatter(mileages, prices, color="blue", label="Data points")
 
     # Regression line
     x_line = [min(mileages), max(mileages)]
     y_line = [estimate_price(x, theta0, theta1) for x in x_line]
-    plt.plot(x_line, y_line, color='red', label='Regression line')
+    plt.plot(x_line, y_line, color="red", label="Regression line")
 
-    plt.xlabel('Mileage (km)')
-    plt.ylabel('Price')
-    plt.title('Linear Regression: Car Price vs Mileage')
+    plt.xlabel("Mileage (km)")
+    plt.ylabel("Price")
+    plt.title("Linear Regression: Car Price vs Mileage")
     plt.legend()
     plt.grid(True)
-    plt.savefig('plot.png')
+    plt.savefig("plot.png")
     plt.show()
