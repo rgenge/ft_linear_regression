@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Tiny CLI to train or predict without extra flags."""
 
 from train import calculate_precision, load_data, plot_results, save_thetas, train
 from predict import estimate_price, load_thetas
