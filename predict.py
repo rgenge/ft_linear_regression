@@ -16,5 +16,3 @@ def estimate_price(mileage, theta0, theta1):
     """Calculate estimated price using the linear hypothesis."""
     return theta0 + (theta1 * mileage)
 
-
-# Module-only; interactive flow lives in main.py
